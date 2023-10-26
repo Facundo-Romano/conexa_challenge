@@ -5,4 +5,8 @@ export class AuthService {
   register(): string {
     return 'Register';
   }
+
+  login(): string {
+    return 'Login';
+  }
 }
