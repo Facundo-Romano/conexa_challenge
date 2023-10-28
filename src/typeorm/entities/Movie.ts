@@ -12,10 +12,14 @@ export class Movie {
     })
     title: string
 
-    @Column()
+    @Column({
+        name: 'episode_id'
+    })
     episodeId: number
     
-    @Column()
+    @Column({
+        name: 'opening_crawl'
+    })
     openingCrawl: string
     
     @Column()
@@ -24,6 +28,8 @@ export class Movie {
     @Column()
     producer: string
     
-    @Column()
+    @Column({
+        name: 'release_date'
+    })
     releaseDate: string
 };
