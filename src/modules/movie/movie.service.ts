@@ -28,18 +28,31 @@ export class MovieService {
     private vehicleRepository: Repository<Vehicle>,
   ) {}
 
-  getMovie(id: number): string {
-    return 'Movie: ' + id;
+  async getMovie(id: number): Promise<Movie> {
+    return await this.movieRepository.findOne({
+      where: { id },
+      relations: {
+        characters: true,
+        planets: true,
+        species: true,
+        starships: true,
+        vehicles: true
+      }
+    });
   }
-  getMovies(): string {
-    return 'All Movies';
+
+  async getMovies(): Promise<Movie[]> {
+    return await this.movieRepository.find();
   }
+
   updateMovie(): string {
     return 'Update Movie';
   }
+
   deleteMovie(): string {
     return 'Delete Movie';
   }
+
   async populateDatabase(): Promise<void> {
     try {
       await this.loadCharacters();
@@ -52,6 +65,7 @@ export class MovieService {
       console.log(e)
     }
   }
+
   async loadCharacters(): Promise<void> {
     try {
       const apiCharacters: ApiCharacter[] = await getApiData<ApiCharacter>(swapiUrls.CHARACTERS);
@@ -67,6 +81,7 @@ export class MovieService {
       console.log(e)
     }
   }
+
   async loadPlanets(): Promise<void> {
     try {
       const apiPlanets: ApiPlanet[] = await getApiData<ApiPlanet>(swapiUrls.PLANETS);
@@ -82,6 +97,7 @@ export class MovieService {
       console.log(e)
     }
   }
+
   async loadSpecies(): Promise<void> {
     try {
       const apiSpecies: ApiSpecies[] = await getApiData<ApiSpecies>(swapiUrls.SPECIES);
@@ -97,6 +113,7 @@ export class MovieService {
       console.log(e)
     }
   }
+
   async loadStarships(): Promise<void> {
     try {
       const apiStarships: ApiStarships[] = await getApiData<ApiStarships>(swapiUrls.STARSHIPS);
@@ -112,6 +129,7 @@ export class MovieService {
       console.log(e)
     }
   }
+
   async loadVehicles(): Promise<void> {
     try {
       const apiVehicles: ApiVehicle[] = await getApiData<ApiVehicle>(swapiUrls.VEHICLES);
@@ -127,6 +145,7 @@ export class MovieService {
       console.log(e)
     }
   }
+
   async loadMovies(): Promise<void> {
     try {
       const apiMovies: ApiMovie[] = await getApiData<ApiMovie>(swapiUrls.MOVIES);
