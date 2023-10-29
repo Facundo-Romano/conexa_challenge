@@ -1,18 +1,18 @@
-export default async function getApiData<T>(url: string): Promise<T[]>  {
-    try {
-        const response = await fetch(url);
-    
-        const data: ApiResponse<T> = await response.json();
+export default async function getApiData<T>(url: string): Promise<T[]> {
+  try {
+    const response = await fetch(url);
 
-        let results: T[] = data.results;
+    const data: ApiResponse<T> = await response.json();
 
-        if (data.next) {
-            const additionalResults = await getApiData<T>(data.next);
-            results = results.concat(additionalResults);
-        }
+    let results: T[] = data.results;
 
-        return results;
-    } catch (e) {
-        console.log(e)
+    if (data.next) {
+      const additionalResults = await getApiData<T>(data.next);
+      results = results.concat(additionalResults);
     }
+
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
 }

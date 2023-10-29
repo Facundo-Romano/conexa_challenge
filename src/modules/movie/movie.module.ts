@@ -10,7 +10,16 @@ import { Starship } from 'src/typeorm/entities/Starship';
 import { Vehicle } from 'src/typeorm/entities/Vehicle';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Movie, Character, Planet, Specie, Starship, Vehicle])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Movie,
+      Character,
+      Planet,
+      Specie,
+      Starship,
+      Vehicle,
+    ]),
+  ],
   controllers: [MovieController],
   providers: [MovieService],
 })

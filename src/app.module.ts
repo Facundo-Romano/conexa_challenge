@@ -5,6 +5,6 @@ import configModule from './config/configModule';
 import databaseConfig from './typeorm/config';
 
 @Module({
-  imports: [AuthModule, MovieModule, configModule, databaseConfig]
+  imports: [AuthModule, MovieModule, configModule, databaseConfig],
 })
 export class AppModule {}
