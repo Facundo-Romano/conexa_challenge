@@ -10,6 +10,13 @@ import { Vehicle } from 'src/typeorm/entities/Vehicle';
 import { Repository } from 'typeorm';
 import findEntities from './functions/findEntities';
 import getApiData from './functions/getApiData';
+import ApiCharacter from './interfaces/swapiResponses/ApiCharacter';
+import ApiPlanet from './interfaces/swapiResponses/ApiPlanet';
+import ApiSpecies from './interfaces/swapiResponses/ApiSpecies';
+import ApiStarships from './interfaces/swapiResponses/ApiStarship';
+import ApiVehicle from './interfaces/swapiResponses/ApiVehicle';
+import ApiMovie from './interfaces/swapiResponses/ApiMovie';
+import UpdateMovieRequestBody from './interfaces/UpdateMovieRequestBody';
 
 @Injectable()
 export class MovieService {
@@ -45,8 +52,42 @@ export class MovieService {
     return await this.movieRepository.find();
   }
 
-  updateMovie(): string {
-    return 'Update Movie';
+  async updateMovie(
+    dataMovie: UpdateMovieRequestBody,
+    id: number,
+  ): Promise<Movie> {
+    const movie: Movie = await this.movieRepository.findOne({
+      where: { id },
+    });
+
+    movie.title = dataMovie.title;
+    movie.episodeId = dataMovie.episodeId;
+    movie.openingCrawl = dataMovie.openingCrawl;
+    movie.director = dataMovie.director;
+    movie.producer = dataMovie.producer;
+    movie.releaseDate = dataMovie.releaseDate;
+    movie.characters = await findEntities<Character>(
+      this.characterRepository,
+      dataMovie.characters,
+    );
+    movie.planets = await findEntities<Planet>(
+      this.planetRepository,
+      dataMovie.planets,
+    );
+    movie.species = await findEntities<Specie>(
+      this.specieRepository,
+      dataMovie.species,
+    );
+    movie.starships = await findEntities<Starship>(
+      this.starshipRepository,
+      dataMovie.starships,
+    );
+    movie.vehicles = await findEntities<Vehicle>(
+      this.vehicleRepository,
+      dataMovie.vehicles,
+    );
+
+    return await this.movieRepository.save(movie);
   }
 
   deleteMovie(): string {

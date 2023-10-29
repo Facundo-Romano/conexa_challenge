@@ -1,3 +1,5 @@
+import ApiResponse from '../interfaces/swapiResponses/ApiResponse';
+
 export default async function getApiData<T>(url: string): Promise<T[]> {
   try {
     const response = await fetch(url);
