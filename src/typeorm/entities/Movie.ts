@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Character } from './Character';
+import { Planet } from './Planet';
+import { Specie } from './Specie';
+import { Starship } from './Starship';
+import { Vehicle } from './Vehicle';
 
 @Entity()
 export class Movie {
@@ -18,7 +23,8 @@ export class Movie {
     episodeId: number
     
     @Column({
-        name: 'opening_crawl'
+        name: 'opening_crawl',
+        type: 'longtext'
     })
     openingCrawl: string
     
@@ -32,4 +38,24 @@ export class Movie {
         name: 'release_date'
     })
     releaseDate: string
+    
+    @ManyToMany(() => Character)
+    @JoinTable()
+    characters: Character[]
+
+    @ManyToMany(() => Planet)
+    @JoinTable()
+    planets: Planet[]
+
+    @ManyToMany(() => Specie)
+    @JoinTable()
+    species: Specie[]
+
+    @ManyToMany(() => Starship)
+    @JoinTable()
+    starships: Starship[]
+
+    @ManyToMany(() => Vehicle)
+    @JoinTable()
+    vehicles: Vehicle[]
 };
