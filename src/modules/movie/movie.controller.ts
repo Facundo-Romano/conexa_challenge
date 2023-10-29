@@ -3,7 +3,8 @@ import { MovieService } from './movie.service';
 import { Movie } from 'src/typeorm/entities/Movie';
 import { responseEstatuses } from 'src/enums/responseStatuses';
 import { Response } from 'express';
-import UpdateMovieRequestBody from './interfaces/UpdateMovieRequestBody';
+import UpdateMovieRequestBody from './interfaces/UpdateMovieRequest';
+import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
 
 @Controller('movies')
 export class MovieController {
@@ -42,15 +43,22 @@ export class MovieController {
     @Body() body: UpdateMovieRequestBody,
     @Res() res: Response,
   ): Promise<Response> {
-    const movieUpdated: Movie = await this.movieService.updateMovie(body, id);
+    const updatedMovie: Movie = await this.movieService.updateMovie(body, id);
 
     return res
       .status(responseEstatuses.SUCESS)
-      .json({ message: 'Movie updated successfully', results: [movieUpdated] });
+      .json({ message: 'Movie updated successfully', results: [updatedMovie] });
   }
 
   @Delete()
-  delete(): string {
-    return this.movieService.deleteMovie();
+  async delete(
+    @Body() body: DeleteMoviesRequest,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const deletedMovies: Movie[] = await this.movieService.deleteMovie(body);
+
+    return res
+      .status(responseEstatuses.SUCESS)
+      .json({ message: 'Movies deleted successfully', results: deletedMovies });
   }
 }

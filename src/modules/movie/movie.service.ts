@@ -7,7 +7,7 @@ import { Planet } from 'src/typeorm/entities/Planet';
 import { Specie } from 'src/typeorm/entities/Specie';
 import { Starship } from 'src/typeorm/entities/Starship';
 import { Vehicle } from 'src/typeorm/entities/Vehicle';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import findEntities from './functions/findEntities';
 import getApiData from './functions/getApiData';
 import ApiCharacter from './interfaces/swapiResponses/ApiCharacter';
@@ -16,7 +16,8 @@ import ApiSpecies from './interfaces/swapiResponses/ApiSpecies';
 import ApiStarships from './interfaces/swapiResponses/ApiStarship';
 import ApiVehicle from './interfaces/swapiResponses/ApiVehicle';
 import ApiMovie from './interfaces/swapiResponses/ApiMovie';
-import UpdateMovieRequestBody from './interfaces/UpdateMovieRequestBody';
+import UpdateMovieRequestBody from './interfaces/UpdateMovieRequest';
+import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
 
 @Injectable()
 export class MovieService {
@@ -36,66 +37,94 @@ export class MovieService {
   ) {}
 
   async getMovie(id: number): Promise<Movie> {
-    return await this.movieRepository.findOne({
-      where: { id },
-      relations: {
-        characters: true,
-        planets: true,
-        species: true,
-        starships: true,
-        vehicles: true,
-      },
-    });
+    try {
+      return await this.movieRepository.findOne({
+        where: { id },
+        relations: {
+          characters: true,
+          planets: true,
+          species: true,
+          starships: true,
+          vehicles: true,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async getMovies(): Promise<Movie[]> {
-    return await this.movieRepository.find();
+    try {
+      return await this.movieRepository.find();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async updateMovie(
-    dataMovie: UpdateMovieRequestBody,
+    request: UpdateMovieRequestBody,
     id: number,
   ): Promise<Movie> {
-    const movie: Movie = await this.movieRepository.findOne({
-      where: { id },
-    });
+    try {
+      const movie: Movie = await this.movieRepository.findOne({
+        where: { id },
+      });
 
-    movie.title = dataMovie.title;
-    movie.episodeId = dataMovie.episodeId;
-    movie.openingCrawl = dataMovie.openingCrawl;
-    movie.director = dataMovie.director;
-    movie.producer = dataMovie.producer;
-    movie.releaseDate = dataMovie.releaseDate;
-    movie.characters = await findEntities<Character>(
-      this.characterRepository,
-      dataMovie.characters,
-    );
-    movie.planets = await findEntities<Planet>(
-      this.planetRepository,
-      dataMovie.planets,
-    );
-    movie.species = await findEntities<Specie>(
-      this.specieRepository,
-      dataMovie.species,
-    );
-    movie.starships = await findEntities<Starship>(
-      this.starshipRepository,
-      dataMovie.starships,
-    );
-    movie.vehicles = await findEntities<Vehicle>(
-      this.vehicleRepository,
-      dataMovie.vehicles,
-    );
+      movie.title = request.title;
+      movie.episodeId = request.episodeId;
+      movie.openingCrawl = request.openingCrawl;
+      movie.director = request.director;
+      movie.producer = request.producer;
+      movie.releaseDate = request.releaseDate;
+      movie.characters = await findEntities<Character>(
+        this.characterRepository,
+        request.characters,
+      );
+      movie.planets = await findEntities<Planet>(
+        this.planetRepository,
+        request.planets,
+      );
+      movie.species = await findEntities<Specie>(
+        this.specieRepository,
+        request.species,
+      );
+      movie.starships = await findEntities<Starship>(
+        this.starshipRepository,
+        request.starships,
+      );
+      movie.vehicles = await findEntities<Vehicle>(
+        this.vehicleRepository,
+        request.vehicles,
+      );
 
-    return await this.movieRepository.save(movie);
+      return await this.movieRepository.save(movie);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  deleteMovie(): string {
-    return 'Delete Movie';
+  async deleteMovie(request: DeleteMoviesRequest): Promise<Movie[]> {
+    try {
+      const movies: Movie[] = await this.movieRepository.find({
+        where: { id: In(request.ids) },
+      });
+
+      await this.movieRepository.delete(movies.map((movie) => movie.id));
+
+      return movies;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async populateDatabase(): Promise<void> {
     try {
+      await this.characterRepository.delete({});
+      await this.planetRepository.delete({});
+      await this.specieRepository.delete({});
+      await this.starshipRepository.delete({});
+      await this.vehicleRepository.delete({});
+      await this.movieRepository.delete({});
       await this.loadCharacters();
       await this.loadPlanets();
       await this.loadSpecies();
