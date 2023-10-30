@@ -1,6 +1,8 @@
 import { ExecutionContext } from '@nestjs/common';
+import { JwtPayload } from 'jsonwebtoken';
 import { UserGuard } from 'src/modules/guards/user.guard';
 import { responseEstatuses } from 'src/utils/enums/responseStatuses';
+import throwError from 'src/utils/functions/throwError';
 import * as verifyToken from 'src/utils/functions/verifyToken';
 
 describe('UserGuard', () => {
@@ -59,6 +61,7 @@ describe('UserGuard', () => {
     it('should throw and HttpExeption if there is no token', async () => {
       try {
         userGuard.canActivate(noTokenExecutionContext);
+        expect(true).toBe(false);
       } catch (err) {
         expect(err.status).toEqual(responseEstatuses.UNAUTHORIZED);
         expect(err.message).toEqual('Auth error - Please provide a token.');
@@ -70,7 +73,9 @@ describe('UserGuard', () => {
     it('should throw and HttpExeption if the token is invalid', async () => {
       try {
         userGuard.canActivate(invalidTokenExecutionContext);
+        expect(true).toBe(false);
       } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.FORBIDDEN);
         expect(err.message).toEqual('Auth error - Please provide a valid token.');
       }
     });

@@ -101,7 +101,10 @@ describe('AdminGuard', () => {
   describe('User not found', () => {
     it('should throw and HttpExeption if the token user is not found', async () => {
       try {
-        jest.spyOn(userRepository, 'findOne').mockImplementation();
+        jest.spyOn(verifyToken, 'default').mockImplementation(() => { 
+          return { id: 1 } as JwtPayload
+        });
+        jest.spyOn(userRepository, 'findOne').mockImplementation(async () => null);
         await adminGuard.canActivate(validTokenExecutionContext);
       } catch (err) {
         expect(err.message).toEqual('Auth error - Please provide a valid token.');
