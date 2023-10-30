@@ -26,139 +26,153 @@ describe('AuthService', () => {
     user.password = 'Password*123';
     user.role = UserRole.USER;
 
-    token = "token";
+    token = 'token';
     process.env.SECRET_KEY = 'secretKey';
     process.env.TOKEN_EXPIRATION = '1d';
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
-  })
+  });
 
   describe('register', () => {
     it('should return a user', async () => {
-        jest.spyOn(validateLoginRequest, 'default').mockImplementation();
-        jest.spyOn(userRepository, 'findOne').mockImplementation(async () => null);
-        jest.spyOn(userRepository, 'create').mockImplementation(() => user);
-        jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'hashedPassword');
-        jest.spyOn(userRepository, 'save').mockImplementation(async () => user);
-        
-        const returnValue: User = await authService.register(user);
-        
-        expect(returnValue).toBe(user);
+      jest.spyOn(validateLoginRequest, 'default').mockImplementation();
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockImplementation(async () => null);
+      jest.spyOn(userRepository, 'create').mockImplementation(() => user);
+      jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'hashedPassword');
+      jest.spyOn(userRepository, 'save').mockImplementation(async () => user);
+
+      const returnValue: User = await authService.register(user);
+
+      expect(returnValue).toEqual(user);
     });
   });
 
   describe('login', () => {
     it('should return a token', async () => {
-        jest.spyOn(validateLoginRequest, 'default').mockImplementation();
-        jest.spyOn(userRepository, 'findOne').mockImplementation(async () => user);
-        jest.spyOn(bcrypt, 'compare').mockImplementation(() => true);
-        jest.spyOn(generateJwt, 'default').mockImplementation(() => token);
-        
-        const returnValue: string = await authService.login(user);
-        
-        expect(returnValue).toBe(token);
+      jest.spyOn(validateLoginRequest, 'default').mockImplementation();
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockImplementation(async () => user);
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => true);
+      jest.spyOn(generateJwt, 'default').mockImplementation(() => token);
+
+      const returnValue: string = await authService.login(user);
+
+      expect(returnValue).toEqual(token);
     });
   });
-  
+
   describe('register error - invalid request', () => {
     it('should return an HttpExeption when email format is incorrect', async () => {
-        try {
-            user.email = 'invalidEmail';
-            await authService.register(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('Invalid email format.');
-        }    
+      try {
+        user.email = 'invalidEmail';
+        await authService.register(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual('Invalid email format.');
+      }
     });
     it('should return an HttpExeption when password format is incorrect', async () => {
-        try {
-            user.password = 'invalidPassword';
-            await authService.register(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('Invalid password format. Password should be at least 12 characters long, have at least one uppercase letter and have at least one special character.');
-        }    
+      try {
+        user.password = 'invalidPassword';
+        await authService.register(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual(
+          'Invalid password format. Password should be at least 12 characters long, have at least one uppercase letter and have at least one special character.',
+        );
+      }
     });
     it('should return an HttpExeption when firstName format is incorrect', async () => {
-        try {
-            user.firstName = '';
-            await authService.register(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('FirstName cannot be empty.');
-        }    
+      try {
+        user.firstName = '';
+        await authService.register(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual('FirstName cannot be empty.');
+      }
     });
     it('should return an HttpExeption when lastName format is incorrect', async () => {
-        try {
-            user.lastName = '';
-            await authService.register(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('LastName cannot be empty.');
-        }    
+      try {
+        user.lastName = '';
+        await authService.register(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual('LastName cannot be empty.');
+      }
     });
   });
-  
+
   describe('register error - email already in use', () => {
     it('should return an HttpExeption', async () => {
-        try {
-            jest.spyOn(validateRegisterRequest, 'default').mockImplementation();
-            jest.spyOn(userRepository, 'findOne').mockImplementation(async () => user);
-            
-            await authService.register(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.CONFLICT);
-            expect(err.message).toBe('Email already in use.');
-        }    
+      try {
+        jest.spyOn(validateRegisterRequest, 'default').mockImplementation();
+        jest
+          .spyOn(userRepository, 'findOne')
+          .mockImplementation(async () => user);
+
+        await authService.register(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.CONFLICT);
+        expect(err.message).toEqual('Email already in use.');
+      }
     });
   });
-  
+
   describe('login error - invalid request', () => {
     it('should return an HttpExeption when email format is incorrect', async () => {
-        try {
-            user.email = 'invalidPassword'
+      try {
+        user.email = 'invalidPassword';
 
-            await authService.login(user);
-        } catch (err) {
-            expect(err.message).toBe('Invalid email format.');
-        }    
+        await authService.login(user);
+      } catch (err) {
+        expect(err.message).toEqual('Invalid email format.');
+      }
     });
     it('should return an HttpExeption when password format is incorrect', async () => {
-        try {
-            user.password = 'invalidPassword'
-            await authService.login(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('Invalid password format. Password should be at least 12 characters long, have at least one uppercase letter and have at least one special character.');
-        }    
+      try {
+        user.password = 'invalidPassword';
+        await authService.login(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual(
+          'Invalid password format. Password should be at least 12 characters long, have at least one uppercase letter and have at least one special character.',
+        );
+      }
     });
   });
-  
+
   describe('login error - invalid credentials', () => {
     it('should return an HttpExeption when user is not found', async () => {
-        try {
-            jest.spyOn(validateLoginRequest, 'default').mockImplementation();
-            jest.spyOn(userRepository, 'findOne').mockImplementation(async () => null);
-            
-            await authService.login(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('Invalid credentials.');
-        }    
+      try {
+        jest.spyOn(validateLoginRequest, 'default').mockImplementation();
+        jest
+          .spyOn(userRepository, 'findOne')
+          .mockImplementation(async () => null);
+
+        await authService.login(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual('Invalid credentials.');
+      }
     });
     it(`should return an HttpExeption when user password and provided password don't match`, async () => {
-        try {
-            jest.spyOn(validateLoginRequest, 'default').mockImplementation();
-            jest.spyOn(userRepository, 'findOne').mockImplementation(async () => user);
-            jest.spyOn(bcrypt, 'compare').mockImplementation(() => false);
-            
-            await authService.login(user);
-        } catch (err) {
-            expect(err.status).toBe(responseEstatuses.BAD_REQUEST);
-            expect(err.message).toBe('Invalid credentials.');
-        }    
+      try {
+        jest.spyOn(validateLoginRequest, 'default').mockImplementation();
+        jest
+          .spyOn(userRepository, 'findOne')
+          .mockImplementation(async () => user);
+        jest.spyOn(bcrypt, 'compare').mockImplementation(() => false);
+
+        await authService.login(user);
+      } catch (err) {
+        expect(err.status).toEqual(responseEstatuses.BAD_REQUEST);
+        expect(err.message).toEqual('Invalid credentials.');
+      }
     });
   });
 });

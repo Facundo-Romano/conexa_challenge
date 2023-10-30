@@ -78,7 +78,7 @@ export class MovieController {
     @Body() body: DeleteMoviesRequest,
     @Res() res: Response,
   ): Promise<Response> {
-    const deletedMovies: Movie[] = await this.movieService.deleteMovie(body);
+    const deletedMovies: Movie[] = await this.movieService.deleteMovies(body);
 
     return handleResponse<Movie>(
       deletedMovies,

@@ -74,7 +74,8 @@
     },
     "collectCoverageFrom": [
       "src/**/*.controller.(t|j)s",
-      "src/**/*.service.(t|j)s"
+      "src/**/*.service.(t|j)s",
+      "src/**/*.guard.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

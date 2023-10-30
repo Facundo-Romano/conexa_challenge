@@ -26,12 +26,12 @@ describe('AuthController', () => {
     user.email = 'email@email.com';
     user.password = 'Password*123';
 
-    token = "token"
+    token = 'token';
   });
-  
+
   afterEach(() => {
     jest.restoreAllMocks();
-  })
+  });
 
   describe('register', () => {
     it('should return a user', async () => {
@@ -47,7 +47,6 @@ describe('AuthController', () => {
     });
   });
 
-  
   describe('login', () => {
     it('should return a token', async () => {
       jest.spyOn(authService, 'login').mockImplementation(async () => token);
