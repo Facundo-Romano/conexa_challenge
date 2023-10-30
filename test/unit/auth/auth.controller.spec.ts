@@ -28,6 +28,10 @@ describe('AuthController', () => {
 
     token = "token"
   });
+  
+  afterEach(() => {
+    jest.restoreAllMocks();
+  })
 
   describe('register', () => {
     it('should return a user', async () => {
