@@ -16,8 +16,12 @@ import ApiSpecies from './interfaces/swapiResponses/ApiSpecies';
 import ApiStarships from './interfaces/swapiResponses/ApiStarship';
 import ApiVehicle from './interfaces/swapiResponses/ApiVehicle';
 import ApiMovie from './interfaces/swapiResponses/ApiMovie';
-import UpdateMovieRequestBody from './interfaces/UpdateMovieRequest';
 import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
+import { responseEstatuses } from 'src/enums/responseStatuses';
+import throwError from 'src/functions/throwError';
+import UpdateMovieRequest from './interfaces/UpdateMovieRequest';
+import validateUpdateRequest from './functions/validateUpdateRequest';
+import validateDeleteRequest from './functions/validateDeleteRequest';
 
 @Injectable()
 export class MovieService {
@@ -37,103 +41,101 @@ export class MovieService {
   ) {}
 
   async getMovie(id: number): Promise<Movie> {
-    try {
-      return await this.movieRepository.findOne({
-        where: { id },
-        relations: {
-          characters: true,
-          planets: true,
-          species: true,
-          starships: true,
-          vehicles: true,
-        },
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    const movie: Movie = await this.movieRepository.findOne({
+      where: { id },
+      relations: {
+        characters: true,
+        planets: true,
+        species: true,
+        starships: true,
+        vehicles: true,
+      },
+    });
+
+    if (!movie) throwError(responseEstatuses.NOT_FOUND, 'Movie not found.');
+
+    return movie;
   }
 
   async getMovies(): Promise<Movie[]> {
-    try {
-      return await this.movieRepository.find();
-    } catch (e) {
-      console.log(e);
-    }
+    return await this.movieRepository.find();
   }
 
-  async updateMovie(
-    request: UpdateMovieRequestBody,
-    id: number,
-  ): Promise<Movie> {
-    try {
-      const movie: Movie = await this.movieRepository.findOne({
-        where: { id },
-      });
+  async updateMovie(request: UpdateMovieRequest, id: number): Promise<Movie> {
+    validateUpdateRequest(request);
 
-      movie.title = request.title;
-      movie.episodeId = request.episodeId;
-      movie.openingCrawl = request.openingCrawl;
-      movie.director = request.director;
-      movie.producer = request.producer;
-      movie.releaseDate = request.releaseDate;
-      movie.characters = await findEntities<Character>(
-        this.characterRepository,
-        request.characters,
-      );
-      movie.planets = await findEntities<Planet>(
-        this.planetRepository,
-        request.planets,
-      );
-      movie.species = await findEntities<Specie>(
-        this.specieRepository,
-        request.species,
-      );
-      movie.starships = await findEntities<Starship>(
-        this.starshipRepository,
-        request.starships,
-      );
-      movie.vehicles = await findEntities<Vehicle>(
-        this.vehicleRepository,
-        request.vehicles,
-      );
+    const movie: Movie = await this.movieRepository.findOne({
+      where: { id },
+    });
 
-      return await this.movieRepository.save(movie);
-    } catch (e) {
-      console.log(e);
-    }
+    if (!movie) throwError(responseEstatuses.NOT_FOUND, 'Movie not found.');
+
+    movie.title = request.title;
+    movie.episodeId = request.episodeId;
+    movie.openingCrawl = request.openingCrawl;
+    movie.director = request.director;
+    movie.producer = request.producer;
+    movie.releaseDate = request.releaseDate;
+    movie.characters = await findEntities<Character>(
+      this.characterRepository,
+      request.characters,
+      'Character',
+    );
+    movie.planets = await findEntities<Planet>(
+      this.planetRepository,
+      request.planets,
+      'Planet',
+    );
+    movie.species = await findEntities<Specie>(
+      this.specieRepository,
+      request.species,
+      'Specie',
+    );
+    movie.starships = await findEntities<Starship>(
+      this.starshipRepository,
+      request.starships,
+      'Starship',
+    );
+    movie.vehicles = await findEntities<Vehicle>(
+      this.vehicleRepository,
+      request.vehicles,
+      'Vehicle',
+    );
+
+    return await this.movieRepository.save(movie);
   }
 
   async deleteMovie(request: DeleteMoviesRequest): Promise<Movie[]> {
-    try {
-      const movies: Movie[] = await this.movieRepository.find({
-        where: { id: In(request.ids) },
-      });
+    validateDeleteRequest(request);
 
-      await this.movieRepository.delete(movies.map((movie) => movie.id));
+    const movies: Movie[] = await this.movieRepository.find({
+      where: { id: In(request.ids) },
+    });
 
-      return movies;
-    } catch (e) {
-      console.log(e);
-    }
+    if (movies.length === 0)
+      throwError(
+        responseEstatuses.NOT_FOUND,
+        'No movies found for the provided ids.',
+      );
+
+    await this.movieRepository.delete(movies.map((movie) => movie.id));
+
+    return movies;
   }
 
   async populateDatabase(): Promise<void> {
-    try {
-      await this.characterRepository.delete({});
-      await this.planetRepository.delete({});
-      await this.specieRepository.delete({});
-      await this.starshipRepository.delete({});
-      await this.vehicleRepository.delete({});
-      await this.movieRepository.delete({});
-      await this.loadCharacters();
-      await this.loadPlanets();
-      await this.loadSpecies();
-      await this.loadStarships();
-      await this.loadVehicles();
-      await this.loadMovies();
-    } catch (e) {
-      console.log(e);
-    }
+    await this.characterRepository.delete({});
+    await this.planetRepository.delete({});
+    await this.specieRepository.delete({});
+    await this.starshipRepository.delete({});
+    await this.vehicleRepository.delete({});
+    await this.movieRepository.delete({});
+    await this.loadCharacters();
+    await this.loadPlanets();
+    await this.loadSpecies();
+    await this.loadStarships();
+    await this.loadVehicles();
+    await this.loadMovies();
   }
 
   async loadCharacters(): Promise<void> {
@@ -150,8 +152,11 @@ export class MovieService {
       });
 
       await Promise.all(promiseArr);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      throwError(
+        responseEstatuses.ERROR,
+        `Error loading characters: ${err.message}`,
+      );
     }
   }
 
@@ -168,8 +173,11 @@ export class MovieService {
       });
 
       await Promise.all(promiseArr);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      throwError(
+        responseEstatuses.ERROR,
+        `Error loading planets: ${err.message}`,
+      );
     }
   }
 
@@ -186,8 +194,11 @@ export class MovieService {
       });
 
       await Promise.all(promiseArr);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      throwError(
+        responseEstatuses.ERROR,
+        `Error loading Species: ${err.message}`,
+      );
     }
   }
 
@@ -204,8 +215,11 @@ export class MovieService {
       });
 
       await Promise.all(promiseArr);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      throwError(
+        responseEstatuses.ERROR,
+        `Error loading starships: ${err.message}`,
+      );
     }
   }
 
@@ -222,8 +236,11 @@ export class MovieService {
       });
 
       await Promise.all(promiseArr);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      throwError(
+        responseEstatuses.ERROR,
+        `Error loading vehicles: ${err.message}`,
+      );
     }
   }
 
@@ -240,22 +257,27 @@ export class MovieService {
         const charactersArr: Character[] = await findEntities<Character>(
           this.characterRepository,
           apiMovie.characters,
+          'Character',
         );
         const planetsArr: Planet[] = await findEntities<Planet>(
           this.planetRepository,
           apiMovie.planets,
+          'Planet',
         );
         const starshipsArr: Starship[] = await findEntities<Starship>(
           this.starshipRepository,
           apiMovie.starships,
+          'Starship',
         );
         const vehiclesArr: Vehicle[] = await findEntities<Vehicle>(
           this.vehicleRepository,
           apiMovie.vehicles,
+          'Vehicle',
         );
         const speciesArr: Specie[] = await findEntities<Specie>(
           this.specieRepository,
           apiMovie.species,
+          'Specie',
         );
 
         movie.title = apiMovie.title;
@@ -274,8 +296,11 @@ export class MovieService {
       });
 
       await Promise.all(promiseArr);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      throwError(
+        responseEstatuses.ERROR,
+        `Error loading movies: ${err.message}`,
+      );
     }
   }
 }

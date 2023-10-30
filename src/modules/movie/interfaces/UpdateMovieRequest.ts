@@ -1,4 +1,4 @@
-export default interface UpdateMovieRequestBody {
+export default interface UpdateMovieRequest {
   title: string;
   episodeId: number;
   openingCrawl: string;

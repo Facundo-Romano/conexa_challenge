@@ -6,6 +6,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import LoginRequest from './interfaces/LoginRquest';
 import generateJwt from './functions/generateJwt';
+import throwError from 'src/functions/throwError';
+import { responseEstatuses } from 'src/enums/responseStatuses';
+import validateRegisterRequest from './functions/validateRegisterRequest';
+import validateLoginRequest from 'src/modules/auth/functions/validateLoginRequest';
 
 @Injectable()
 export class AuthService {
@@ -15,45 +19,46 @@ export class AuthService {
   ) {}
 
   async register(request: RegisterRequest): Promise<User> {
-    try {
-      const user: User = await this.userRepository.create(request);
+    validateRegisterRequest(request);
 
-      user.password = await bcrypt.hash(request.password, 10);
+    const userExists: User = await this.userRepository.findOne({
+      where: { email: request.email },
+    });
 
-      const newUser: User = await this.userRepository.save(user);
+    if (userExists)
+      throwError(responseEstatuses.CONFLICT, 'Email already in use.');
 
-      delete newUser.password;
+    const user: User = await this.userRepository.create(request);
 
-      return newUser;
-    } catch (e) {
-      console.log(e);
-    }
+    user.password = await bcrypt.hash(request.password, 10);
+
+    const newUser: User = await this.userRepository.save(user);
+
+    delete newUser.password;
+
+    return newUser;
   }
 
   async login(request: LoginRequest): Promise<string> {
-    try {
-      const user: User = await this.userRepository.findOne({
-        where: { email: request.email },
-      });
+    validateLoginRequest(request);
 
-      if (!user) {
-        console.log('user doesnt exist');
-      }
+    const user: User = await this.userRepository.findOne({
+      where: { email: request.email },
+    });
 
-      const isPasswordValid: boolean = await bcrypt.compare(
-        request.password,
-        user.password,
-      );
+    if (!user)
+      throwError(responseEstatuses.BAD_REQUEST, 'Invalid credentials.');
 
-      if (!isPasswordValid) {
-        console.log('invalid password');
-      }
+    const isPasswordValid: boolean = await bcrypt.compare(
+      request.password,
+      user.password,
+    );
 
-      delete user.password;
+    if (!isPasswordValid)
+      throwError(responseEstatuses.BAD_REQUEST, 'Invalid credentials.');
 
-      return generateJwt({...user});
-    } catch (e) {
-      console.log(e);
-    }
+    delete user.password;
+
+    return generateJwt({ ...user });
   }
 }

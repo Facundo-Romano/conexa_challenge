@@ -1,8 +1,11 @@
+import { responseEstatuses } from 'src/enums/responseStatuses';
+import throwError from 'src/functions/throwError';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 export default async function findEntities<T>(
   repository: Repository<T>,
   data: string[],
+  entityName: string,
 ): Promise<T[]> {
   const entities: T[] = [];
 
@@ -12,6 +15,9 @@ export default async function findEntities<T>(
 
     const existingEntity = await repository.findOne({ where: whereCondition });
 
+    if (!existingEntity) {
+      throwError(responseEstatuses.NOT_FOUND, `${entityName} not found.`);
+    }
     entities.push(existingEntity);
   }
 

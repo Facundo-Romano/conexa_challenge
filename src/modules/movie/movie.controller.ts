@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Put, Res } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { Movie } from 'src/typeorm/entities/Movie';
-import { responseEstatuses } from 'src/enums/responseStatuses';
 import { Response } from 'express';
-import UpdateMovieRequestBody from './interfaces/UpdateMovieRequest';
 import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
+import handleErrorResponse from 'src/functions/handleErrorResponse';
+import handleResponse from 'src/functions/handleResponse';
+import UpdateMovieRequest from './interfaces/UpdateMovieRequest';
 
 @Controller('movies')
 export class MovieController {
@@ -12,42 +13,54 @@ export class MovieController {
 
   @Get('populateDatabase')
   async populateDatabase(@Res() res: Response): Promise<Response> {
-    await this.movieService.populateDatabase();
+    try {
+      await this.movieService.populateDatabase();
 
-    return res
-      .status(responseEstatuses.SUCESS)
-      .json({ message: 'Data loaded successfully', results: [] });
+      return handleResponse([], 'Data loaded successfully.', res);
+    } catch (err) {
+      handleErrorResponse(err, res);
+    }
   }
 
   @Get('/:id')
   async get(@Param('id') id: number, @Res() res: Response): Promise<Response> {
-    const movie: Movie = await this.movieService.getMovie(id);
+    try {
+      const movie: Movie = await this.movieService.getMovie(id);
 
-    return res
-      .status(responseEstatuses.SUCESS)
-      .json({ message: 'Movie found successfully', results: [movie] });
+      return handleResponse<Movie>([movie], 'Movie found successfully.', res);
+    } catch (err) {
+      handleErrorResponse(err, res);
+    }
   }
 
   @Get()
   async getAll(@Res() res: Response): Promise<Response> {
-    const movies: Movie[] = await this.movieService.getMovies();
+    try {
+      const movies: Movie[] = await this.movieService.getMovies();
 
-    return res
-      .status(responseEstatuses.SUCESS)
-      .json({ message: 'Movies found successfully', results: movies });
+      return handleResponse<Movie>(movies, 'Movies found successfully.', res);
+    } catch (err) {
+      handleErrorResponse(err, res);
+    }
   }
 
   @Put('/:id')
   async update(
     @Param('id') id: number,
-    @Body() body: UpdateMovieRequestBody,
+    @Body() body: UpdateMovieRequest,
     @Res() res: Response,
   ): Promise<Response> {
-    const updatedMovie: Movie = await this.movieService.updateMovie(body, id);
+    try {
+      const updatedMovie: Movie = await this.movieService.updateMovie(body, id);
 
-    return res
-      .status(responseEstatuses.SUCESS)
-      .json({ message: 'Movie updated successfully', results: [updatedMovie] });
+      return handleResponse<Movie>(
+        [updatedMovie],
+        'Movie updated successfully.',
+        res,
+      );
+    } catch (err) {
+      handleErrorResponse(err, res);
+    }
   }
 
   @Delete()
@@ -55,10 +68,16 @@ export class MovieController {
     @Body() body: DeleteMoviesRequest,
     @Res() res: Response,
   ): Promise<Response> {
-    const deletedMovies: Movie[] = await this.movieService.deleteMovie(body);
+    try {
+      const deletedMovies: Movie[] = await this.movieService.deleteMovie(body);
 
-    return res
-      .status(responseEstatuses.SUCESS)
-      .json({ message: 'Movies deleted successfully', results: deletedMovies });
+      return handleResponse<Movie>(
+        deletedMovies,
+        'Movies deleted successfully.',
+        res,
+      );
+    } catch (err) {
+      handleErrorResponse(err, res);
+    }
   }
 }
