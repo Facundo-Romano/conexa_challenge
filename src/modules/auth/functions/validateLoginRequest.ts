@@ -1,5 +1,5 @@
-import { responseEstatuses } from 'src/enums/responseStatuses';
-import throwError from '../../../functions/throwError';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
+import throwError from '../../../utils/functions/throwError';
 import LoginRequest from '../interfaces/LoginRquest';
 import validateEmail from './validateEmail';
 import validatePassword from './validatePassword';

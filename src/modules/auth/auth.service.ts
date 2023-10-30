@@ -6,10 +6,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import LoginRequest from './interfaces/LoginRquest';
 import generateJwt from './functions/generateJwt';
-import throwError from 'src/functions/throwError';
-import { responseEstatuses } from 'src/enums/responseStatuses';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
 import validateRegisterRequest from './functions/validateRegisterRequest';
 import validateLoginRequest from 'src/modules/auth/functions/validateLoginRequest';
+import throwError from 'src/utils/functions/throwError';
 
 @Injectable()
 export class AuthService {

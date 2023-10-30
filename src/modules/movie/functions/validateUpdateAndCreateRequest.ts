@@ -1,6 +1,6 @@
-import { responseEstatuses } from 'src/enums/responseStatuses';
-import throwError from 'src/functions/throwError';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
 import MovieRequest from '../interfaces/MovieRequest';
+import throwError from 'src/utils/functions/throwError';
 
 const validateUpdateAndCreateRequest = (
   request: MovieRequest,

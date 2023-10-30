@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { responseEstatuses } from 'src/enums/responseStatuses';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
 
 const handleResponse = <T>(
   results: T[] = [],

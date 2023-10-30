@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { swapiUrls } from 'src/enums/swapiUrls';
+import { swapiUrls } from 'src/utils/enums/swapiUrls';
 import { Character } from 'src/typeorm/entities/Character';
 import { Movie } from 'src/typeorm/entities/Movie';
 import { Planet } from 'src/typeorm/entities/Planet';
@@ -17,11 +17,11 @@ import ApiStarships from './interfaces/swapiResponses/ApiStarship';
 import ApiVehicle from './interfaces/swapiResponses/ApiVehicle';
 import ApiMovie from './interfaces/swapiResponses/ApiMovie';
 import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
-import { responseEstatuses } from 'src/enums/responseStatuses';
-import throwError from 'src/functions/throwError';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
 import MovieRequest from './interfaces/MovieRequest';
 import validateUpdateAndCreateRequest from './functions/validateUpdateAndCreateRequest';
 import validateDeleteRequest from './functions/validateDeleteRequest';
+import throwError from 'src/utils/functions/throwError';
 
 @Injectable()
 export class MovieService {

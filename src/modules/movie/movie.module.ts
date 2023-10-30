@@ -8,10 +8,13 @@ import { Planet } from 'src/typeorm/entities/Planet';
 import { Specie } from 'src/typeorm/entities/Specie';
 import { Starship } from 'src/typeorm/entities/Starship';
 import { Vehicle } from 'src/typeorm/entities/Vehicle';
+import { GuardsModule } from '../guards/guards.module';
+import { User } from 'src/typeorm/entities/User';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      User,
       Movie,
       Character,
       Planet,
@@ -19,6 +22,7 @@ import { Vehicle } from 'src/typeorm/entities/Vehicle';
       Starship,
       Vehicle,
     ]),
+    GuardsModule
   ],
   controllers: [MovieController],
   providers: [MovieService],

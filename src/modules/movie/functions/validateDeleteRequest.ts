@@ -1,6 +1,6 @@
-import { responseEstatuses } from 'src/enums/responseStatuses';
-import throwError from 'src/functions/throwError';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
 import DeleteMoviesRequest from '../interfaces/DeleteMoviesRequest';
+import throwError from 'src/utils/functions/throwError';
 
 const validateDeleteRequest = (request: DeleteMoviesRequest): void => {
   if (!request.hasOwnProperty('ids'))

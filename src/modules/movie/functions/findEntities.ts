@@ -1,5 +1,5 @@
-import { responseEstatuses } from 'src/enums/responseStatuses';
-import throwError from 'src/functions/throwError';
+import { responseEstatuses } from 'src/utils/enums/responseStatuses';
+import throwError from 'src/utils/functions/throwError';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 export default async function findEntities<T>(
