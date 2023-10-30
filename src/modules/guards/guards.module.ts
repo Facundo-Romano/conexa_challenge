@@ -7,6 +7,6 @@ import { AdminGuard } from './admin.guard';
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   providers: [UserGuard, AdminGuard],
-  exports: [UserGuard, AdminGuard]
+  exports: [UserGuard, AdminGuard],
 })
 export class GuardsModule {}

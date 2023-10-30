@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { Movie } from 'src/typeorm/entities/Movie';
 import { Response } from 'express';
@@ -43,11 +53,7 @@ export class MovieController {
   ): Promise<Response> {
     const movie: Movie = await this.movieService.createMovie(body);
 
-    return handleResponse<Movie>(
-      [movie],
-      'Movie created successfully.',
-      res,
-    );
+    return handleResponse<Movie>([movie], 'Movie created successfully.', res);
   }
 
   @Put('/:id')

@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Body, UseFilters } from '@nestjs/common';
+import { Controller, Post, Res, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from 'src/typeorm/entities/User';
 import { Response } from 'express';
@@ -17,7 +17,7 @@ export class AuthController {
   ): Promise<Response> {
     const user: User = await this.authService.register(body);
 
-    return handleResponse<User>([user], 'User created successfully', res);
+    return handleResponse<User>([user], 'User created successfully.', res);
   }
 
   @Post('login')
@@ -27,6 +27,6 @@ export class AuthController {
   ): Promise<Response> {
     const token: string = await this.authService.login(body);
 
-    return handleResponse([{ token }], 'LoggedIn successfully', res);
+    return handleResponse([{ token }], 'LoggedIn successfully.', res);
   }
 }

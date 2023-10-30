@@ -28,7 +28,7 @@ export class AuthService {
     if (userExists)
       throwError(responseEstatuses.CONFLICT, 'Email already in use.');
 
-    const user: User = await this.userRepository.create(request);
+    const user: User = this.userRepository.create(request);
 
     user.password = await bcrypt.hash(request.password, 10);
 

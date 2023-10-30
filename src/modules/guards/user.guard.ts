@@ -5,24 +5,25 @@ import verifyToken from 'src/utils/functions/verifyToken';
 
 @Injectable()
 export class UserGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean {
+  canActivate(context: ExecutionContext): boolean {
     try {
       const request = context.switchToHttp().getRequest();
       const authorization: string | null = request.headers.authorization;
 
       if (!authorization || authorization.trim() === '') {
-        throwError(responseEstatuses.UNAUTHORIZED, 'Please provide a token.')
+        throwError(responseEstatuses.UNAUTHORIZED, 'Please provide a token.');
       }
 
       const token = authorization.replace(/bearer/gim, '').trim();
 
       request.decodedData = verifyToken(token);
-      
+
       return true;
     } catch (err) {
-      throwError(err.status || responseEstatuses.ERROR, `Auth error - ${err.message}`)
+      throwError(
+        err.status || responseEstatuses.ERROR,
+        `Auth error - ${err.message}`,
+      );
     }
   }
 }

@@ -22,7 +22,7 @@ import { User } from 'src/typeorm/entities/User';
       Starship,
       Vehicle,
     ]),
-    GuardsModule
+    GuardsModule,
   ],
   controllers: [MovieController],
   providers: [MovieService],
