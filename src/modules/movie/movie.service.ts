@@ -14,7 +14,14 @@ import MovieRequest from './interfaces/MovieRequest';
 import validateUpdateAndCreateRequest from './functions/validateUpdateAndCreateRequest';
 import validateDeleteRequest from './functions/validateDeleteRequest';
 import throwError from 'src/utils/functions/throwError';
-import { loadCharacters, loadMovies, loadPlanets, loadSpecies, loadStarships, loadVehicles } from './functions/apiLoaders';
+import {
+  loadCharacters,
+  loadMovies,
+  loadPlanets,
+  loadSpecies,
+  loadStarships,
+  loadVehicles,
+} from './functions/apiLoaders';
 
 @Injectable()
 export class MovieService {
