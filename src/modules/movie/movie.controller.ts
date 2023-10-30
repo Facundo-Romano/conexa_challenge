@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Res } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { Movie } from 'src/typeorm/entities/Movie';
 import { Response } from 'express';
 import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
 import handleErrorResponse from 'src/functions/handleErrorResponse';
 import handleResponse from 'src/functions/handleResponse';
-import UpdateMovieRequest from './interfaces/UpdateMovieRequest';
+import MovieRequest from './interfaces/MovieRequest';
 
 @Controller('movies')
 export class MovieController {
@@ -44,10 +44,28 @@ export class MovieController {
     }
   }
 
+  @Post('create')
+  async create(
+    @Body() body: MovieRequest,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const movie: Movie = await this.movieService.createMovie(body);
+
+      return handleResponse<Movie>(
+        [movie],
+        'Movie created successfully.',
+        res,
+      );
+    } catch (err) {
+      handleErrorResponse(err, res);
+    }
+  }
+
   @Put('/:id')
   async update(
     @Param('id') id: number,
-    @Body() body: UpdateMovieRequest,
+    @Body() body: MovieRequest,
     @Res() res: Response,
   ): Promise<Response> {
     try {

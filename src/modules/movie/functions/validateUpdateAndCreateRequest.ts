@@ -1,8 +1,9 @@
 import { responseEstatuses } from 'src/enums/responseStatuses';
 import throwError from 'src/functions/throwError';
+import MovieRequest from '../interfaces/MovieRequest';
 
-const validateUpdateRequest = <T extends Record<string, any>>(
-  request: T,
+const validateUpdateAndCreateRequest = (
+  request: MovieRequest,
 ): void => {
   for (const prop in request) {
     if (!request[prop])
@@ -10,8 +11,7 @@ const validateUpdateRequest = <T extends Record<string, any>>(
         responseEstatuses.BAD_REQUEST,
         `Invalid ${prop} format. ${prop} cannot be null.`,
       );
-    break;
   }
 };
 
-export default validateUpdateRequest;
+export default validateUpdateAndCreateRequest;

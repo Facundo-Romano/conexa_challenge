@@ -19,8 +19,8 @@ import ApiMovie from './interfaces/swapiResponses/ApiMovie';
 import DeleteMoviesRequest from './interfaces/DeleteMoviesRequest';
 import { responseEstatuses } from 'src/enums/responseStatuses';
 import throwError from 'src/functions/throwError';
-import UpdateMovieRequest from './interfaces/UpdateMovieRequest';
-import validateUpdateRequest from './functions/validateUpdateRequest';
+import MovieRequest from './interfaces/MovieRequest';
+import validateUpdateAndCreateRequest from './functions/validateUpdateAndCreateRequest';
 import validateDeleteRequest from './functions/validateDeleteRequest';
 
 @Injectable()
@@ -61,8 +61,48 @@ export class MovieService {
     return await this.movieRepository.find();
   }
 
-  async updateMovie(request: UpdateMovieRequest, id: number): Promise<Movie> {
-    validateUpdateRequest(request);
+  async createMovie(request: MovieRequest): Promise<Movie> {
+    validateUpdateAndCreateRequest(request);
+
+    const movie: Movie = this.movieRepository.create();
+
+    movie.title = request.title;
+    movie.episodeId = request.episodeId;
+    movie.openingCrawl = request.openingCrawl;
+    movie.director = request.director;
+    movie.producer = request.producer;
+    movie.releaseDate = request.releaseDate;
+    movie.characters = await findEntities<Character>(
+      this.characterRepository,
+      request.characters,
+      'Character',
+    );
+    movie.planets = await findEntities<Planet>(
+      this.planetRepository,
+      request.planets,
+      'Planet',
+    );
+    movie.species = await findEntities<Specie>(
+      this.specieRepository,
+      request.species,
+      'Specie',
+    );
+    movie.starships = await findEntities<Starship>(
+      this.starshipRepository,
+      request.starships,
+      'Starship',
+    );
+    movie.vehicles = await findEntities<Vehicle>(
+      this.vehicleRepository,
+      request.vehicles,
+      'Vehicle',
+    );
+
+    return await this.movieRepository.save(movie);
+  }
+
+  async updateMovie(request: MovieRequest, id: number): Promise<Movie> {
+    validateUpdateAndCreateRequest(request);
 
     const movie: Movie = await this.movieRepository.findOne({
       where: { id },
