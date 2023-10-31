@@ -64,10 +64,12 @@ describe('AdminGuard', () => {
 
   describe('success', () => {
     it('should return true if the user is admin', async () => {
-      jest.spyOn(verifyToken, 'default').mockImplementation(() => { 
-        return { id: 1 } as JwtPayload
+      jest.spyOn(verifyToken, 'default').mockImplementation(() => {
+        return { id: 1 } as JwtPayload;
       });
-      jest.spyOn(userRepository, 'findOne').mockImplementation(async () => user);
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockImplementation(async () => user);
 
       user.role = UserRole.ADMIN;
 
@@ -93,7 +95,9 @@ describe('AdminGuard', () => {
       try {
         await adminGuard.canActivate(invalidTokenExecutionContext);
       } catch (err) {
-        expect(err.message).toEqual('Auth error - Please provide a valid token.');
+        expect(err.message).toEqual(
+          'Auth error - Please provide a valid token.',
+        );
       }
     });
   });
@@ -101,13 +105,17 @@ describe('AdminGuard', () => {
   describe('User not found', () => {
     it('should throw and HttpExeption if the token user is not found', async () => {
       try {
-        jest.spyOn(verifyToken, 'default').mockImplementation(() => { 
-          return { id: 1 } as JwtPayload
+        jest.spyOn(verifyToken, 'default').mockImplementation(() => {
+          return { id: 1 } as JwtPayload;
         });
-        jest.spyOn(userRepository, 'findOne').mockImplementation(async () => null);
+        jest
+          .spyOn(userRepository, 'findOne')
+          .mockImplementation(async () => null);
         await adminGuard.canActivate(validTokenExecutionContext);
       } catch (err) {
-        expect(err.message).toEqual('Auth error - Please provide a valid token.');
+        expect(err.message).toEqual(
+          'Auth error - Please provide a valid token.',
+        );
       }
     });
   });
@@ -115,13 +123,17 @@ describe('AdminGuard', () => {
   describe('User is not admin', () => {
     it('should throw and HttpExeption if the user does not have the admin role', async () => {
       try {
-        jest.spyOn(verifyToken, 'default').mockImplementation(() => { 
-          return { id: 1 } as JwtPayload
+        jest.spyOn(verifyToken, 'default').mockImplementation(() => {
+          return { id: 1 } as JwtPayload;
         });
-        jest.spyOn(userRepository, 'findOne').mockImplementation(async () => user);
+        jest
+          .spyOn(userRepository, 'findOne')
+          .mockImplementation(async () => user);
         await adminGuard.canActivate(validTokenExecutionContext);
       } catch (err) {
-        expect(err.message).toEqual(`Auth error - User doesn't have permissions to access this endpoint.`);
+        expect(err.message).toEqual(
+          `Auth error - User doesn't have permissions to access this endpoint.`,
+        );
       }
     });
   });

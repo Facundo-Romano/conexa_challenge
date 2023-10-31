@@ -15,18 +15,20 @@ import { Vehicle } from 'src/typeorm/entities/Vehicle';
 import ApiMovie from '../interfaces/swapiResponses/ApiMovie';
 import { Movie } from 'src/typeorm/entities/Movie';
 import findEntities from './findEntities';
+import { Repository } from 'typeorm';
 
-export async function loadCharacters(): Promise<void> {
+export async function loadCharacters(
+  repository: Repository<Character>,
+): Promise<void> {
   try {
     const apiCharacters: ApiCharacter[] = await getApiData<ApiCharacter>(
       swapiUrls.CHARACTERS,
     );
 
     const promiseArr = apiCharacters.map((apiCharacter) => {
-      const character: Character =
-        this.characterRepository.create(apiCharacter);
+      const character: Character = repository.create(apiCharacter);
 
-      return this.characterRepository.save(character);
+      return repository.save(character);
     });
 
     await Promise.all(promiseArr);
@@ -38,16 +40,18 @@ export async function loadCharacters(): Promise<void> {
   }
 }
 
-export async function loadPlanets(): Promise<void> {
+export async function loadPlanets(
+  repository: Repository<Planet>,
+): Promise<void> {
   try {
     const apiPlanets: ApiPlanet[] = await getApiData<ApiPlanet>(
       swapiUrls.PLANETS,
     );
 
     const promiseArr = apiPlanets.map((apiPlanet) => {
-      const planet: Planet = this.planetRepository.create(apiPlanet);
+      const planet: Planet = repository.create(apiPlanet);
 
-      return this.planetRepository.save(planet);
+      return repository.save(planet);
     });
 
     await Promise.all(promiseArr);
@@ -59,16 +63,18 @@ export async function loadPlanets(): Promise<void> {
   }
 }
 
-export async function loadSpecies(): Promise<void> {
+export async function loadSpecies(
+  repository: Repository<Specie>,
+): Promise<void> {
   try {
     const apiSpecies: ApiSpecies[] = await getApiData<ApiSpecies>(
       swapiUrls.SPECIES,
     );
 
     const promiseArr = apiSpecies.map((apiSpecie) => {
-      const specie: Specie = this.specieRepository.create(apiSpecie);
+      const specie: Specie = repository.create(apiSpecie);
 
-      return this.specieRepository.save(specie);
+      return repository.save(specie);
     });
 
     await Promise.all(promiseArr);
@@ -80,16 +86,18 @@ export async function loadSpecies(): Promise<void> {
   }
 }
 
-export async function loadStarships(): Promise<void> {
+export async function loadStarships(
+  repository: Repository<Starship>,
+): Promise<void> {
   try {
     const apiStarships: ApiStarships[] = await getApiData<ApiStarships>(
       swapiUrls.STARSHIPS,
     );
 
     const promiseArr = apiStarships.map((apiStarship) => {
-      const starship: Starship = this.starshipRepository.create(apiStarship);
+      const starship: Starship = repository.create(apiStarship);
 
-      return this.starshipRepository.save(starship);
+      return repository.save(starship);
     });
 
     await Promise.all(promiseArr);
@@ -101,16 +109,18 @@ export async function loadStarships(): Promise<void> {
   }
 }
 
-export async function loadVehicles(): Promise<void> {
+export async function loadVehicles(
+  repository: Repository<Starship>,
+): Promise<void> {
   try {
     const apiVehicles: ApiVehicle[] = await getApiData<ApiVehicle>(
       swapiUrls.VEHICLES,
     );
 
     const promiseArr = apiVehicles.map((apiVehicle) => {
-      const vehicle: Vehicle = this.vehicleRepository.create(apiVehicle);
+      const vehicle: Vehicle = repository.create(apiVehicle);
 
-      return this.vehicleRepository.save(vehicle);
+      return repository.save(vehicle);
     });
 
     await Promise.all(promiseArr);
@@ -122,36 +132,43 @@ export async function loadVehicles(): Promise<void> {
   }
 }
 
-export async function loadMovies(): Promise<void> {
+export async function loadMovies(
+  repository: Repository<Movie>,
+  characterRepository: Repository<Character>,
+  planetRepository: Repository<Planet>,
+  specieRepository: Repository<Specie>,
+  starshipRepository: Repository<Starship>,
+  vehicleRepository: Repository<Vehicle>,
+): Promise<void> {
   try {
     const apiMovies: ApiMovie[] = await getApiData<ApiMovie>(swapiUrls.MOVIES);
 
     const promiseArr = apiMovies.map(async (apiMovie) => {
-      const movie: Movie = this.movieRepository.create();
+      const movie: Movie = repository.create();
 
       //Gets movie related entities
       const charactersArr: Character[] = await findEntities<Character>(
-        this.characterRepository,
+        characterRepository,
         apiMovie.characters,
         'Character',
       );
       const planetsArr: Planet[] = await findEntities<Planet>(
-        this.planetRepository,
+        planetRepository,
         apiMovie.planets,
         'Planet',
       );
       const starshipsArr: Starship[] = await findEntities<Starship>(
-        this.starshipRepository,
+        starshipRepository,
         apiMovie.starships,
         'Starship',
       );
       const vehiclesArr: Vehicle[] = await findEntities<Vehicle>(
-        this.vehicleRepository,
+        vehicleRepository,
         apiMovie.vehicles,
         'Vehicle',
       );
       const speciesArr: Specie[] = await findEntities<Specie>(
-        this.specieRepository,
+        specieRepository,
         apiMovie.species,
         'Specie',
       );
@@ -168,7 +185,7 @@ export async function loadMovies(): Promise<void> {
       movie.vehicles = vehiclesArr;
       movie.species = speciesArr;
 
-      return this.movieRepository.save(movie);
+      return repository.save(movie);
     });
 
     await Promise.all(promiseArr);

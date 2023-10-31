@@ -20,10 +20,7 @@ export class UserGuard implements CanActivate {
 
       return true;
     } catch (err) {
-      throwError(
-        err.status,
-        `Auth error - ${err.message}`,
-      );
+      throwError(err.status, `Auth error - ${err.message}`);
     }
   }
 }

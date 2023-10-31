@@ -170,11 +170,18 @@ export class MovieService {
     await this.starshipRepository.delete({});
     await this.vehicleRepository.delete({});
     await this.movieRepository.delete({});
-    await loadCharacters();
-    await loadPlanets();
-    await loadSpecies();
-    await loadStarships();
-    await loadVehicles();
-    await loadMovies();
+    await loadCharacters(this.characterRepository);
+    await loadPlanets(this.planetRepository);
+    await loadSpecies(this.specieRepository);
+    await loadStarships(this.starshipRepository);
+    await loadVehicles(this.vehicleRepository);
+    await loadMovies(
+      this.movieRepository,
+      this.characterRepository,
+      this.planetRepository,
+      this.specieRepository,
+      this.starshipRepository,
+      this.vehicleRepository,
+    );
   }
 }

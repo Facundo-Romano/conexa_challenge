@@ -1,8 +1,6 @@
 import { ExecutionContext } from '@nestjs/common';
-import { JwtPayload } from 'jsonwebtoken';
 import { UserGuard } from 'src/modules/guards/user.guard';
 import { responseEstatuses } from 'src/utils/enums/responseStatuses';
-import throwError from 'src/utils/functions/throwError';
 import * as verifyToken from 'src/utils/functions/verifyToken';
 
 describe('UserGuard', () => {
@@ -76,7 +74,9 @@ describe('UserGuard', () => {
         expect(true).toBe(false);
       } catch (err) {
         expect(err.status).toEqual(responseEstatuses.FORBIDDEN);
-        expect(err.message).toEqual('Auth error - Please provide a valid token.');
+        expect(err.message).toEqual(
+          'Auth error - Please provide a valid token.',
+        );
       }
     });
   });
