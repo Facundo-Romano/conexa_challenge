@@ -22,8 +22,7 @@ Comandos:
     npm run build
     npm run start
 ```
-~~~
-~~~
+---
 ## Endpoints de la app:
 1) Register (POST https://conexachallenge-production.up.railway.app/auth/register):
    Endpoint para crear nuevos usuarios.
@@ -61,9 +60,11 @@ Comandos:
 4) Get All Movies (GET https://conexachallenge-production.up.railway.app/movies):
    Endpoint para obtener todas las peliculas.
    Curl de ejemplo:
-   ```bash curl --location 'https://conexachallenge-production.up.railway.app/movies' ```
+   ```bash
+      curl --location 'https://conexachallenge-production.up.railway.app/movies'
+   ```
 
-5) Create Movie (POST https://conexachallenge-production.up.railway.app/movies/create):
+6) Create Movie (POST https://conexachallenge-production.up.railway.app/movies/create):
    Endpoint para crear una nueva pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
    Curl de ejemplo:
    ```bash
@@ -94,7 +95,7 @@ Comandos:
           ]
       }'
 
-6) Update Movie (PUT https://conexachallenge-production.up.railway.app/movies/:id):
+7) Update Movie (PUT https://conexachallenge-production.up.railway.app/movies/:id):
   Endpoint para obtener modificar una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
   Curl de ejemplo: 
   ```bash
@@ -163,5 +164,4 @@ Comandos:
    ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/movies/populateDatabase' \
       --header 'Authorization: Bearer jwt'
-  ```
 
