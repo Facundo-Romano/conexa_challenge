@@ -21,8 +21,8 @@ Comandos:
 ---
 ## Endpoints de la app:
 1) Register (POST https://conexachallenge-production.up.railway.app/auth/register):
-   Endpoint para crear nuevos usuarios.
-   Curl de ejemplo:
+Endpoint para crear nuevos usuarios.
+Curl de ejemplo:
    ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/auth/register' \
       --header 'Content-Type: application/json' \
@@ -34,9 +34,9 @@ Comandos:
       }'
     ```
 
-2) Login (POST https://conexachallenge-production.up.railway.app/auth/login):
-   Endpoint para loguearte y obtener un jwt.
-   Curl de ejemplo:
+3) Login (POST https://conexachallenge-production.up.railway.app/auth/login):
+Endpoint para loguearte y obtener un jwt.
+Curl de ejemplo:
    ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/auth/login' \
       --header 'Content-Type: application/json' \
@@ -45,24 +45,24 @@ Comandos:
           "password": "Password*123"
       }'
 
-3) Get Movie By Id (GET https://conexachallenge-production.up.railway.app/movies/:id):
-  Endpoint para obtener el detalle de una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder. También es necesario pasar el id de la pelicula.
-  Curl de ejemplo: 
+4) Get Movie By Id (GET https://conexachallenge-production.up.railway.app/movies/:id):
+Endpoint para obtener el detalle de una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder. También es necesario pasar el id de la pelicula.
+Curl de ejemplo: 
   ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/movies/1' \
       --header 'Authorization: Bearer jwt'
   ```
 
 4) Get All Movies (GET https://conexachallenge-production.up.railway.app/movies):
-   Endpoint para obtener todas las peliculas.
-   Curl de ejemplo:
+Endpoint para obtener todas las peliculas.
+Curl de ejemplo:
    ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/movies'
    ```
 
 6) Create Movie (POST https://conexachallenge-production.up.railway.app/movies/create):
-   Endpoint para crear una nueva pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
-   Curl de ejemplo:
+Endpoint para crear una nueva pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
+Curl de ejemplo:
    ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/movies/create' \
       --header 'Content-Type: application/json' \
@@ -92,8 +92,8 @@ Comandos:
       }'
 
 7) Update Movie (PUT https://conexachallenge-production.up.railway.app/movies/:id):
-  Endpoint para obtener modificar una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
-  Curl de ejemplo: 
+Endpoint para obtener modificar una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
+Curl de ejemplo: 
   ```bash
     curl --location --request PUT 'https://conexachallenge-production.up.railway.app/movies/1' \
     --header 'Content-Type: application/json' \
@@ -124,8 +124,8 @@ Comandos:
   ```
 
 7) Delete Movie (DELETE https://conexachallenge-production.up.railway.app/movies):
-   Endpoint para eliminar una lista de peliculas, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
-   Curl de ejemplo:
+Endpoint para eliminar una lista de peliculas, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
+Curl de ejemplo:
    ```bash
       curl --location --request PUT 'https://conexachallenge-production.up.railway.app/movies/1' \
       --header 'Content-Type: application/json' \
@@ -155,8 +155,8 @@ Comandos:
       }'
 
 8) Populate Databse (GET https://conexachallenge-production.up.railway.app/movies/populateDatabase):
-   Endpoint para eliminar todos los registros de la base de datos y crealos de nuevo con la informacion de [swapi](https://swapi.dev/).
-   Curl de ejemplo:
+Endpoint para eliminar todos los registros de la base de datos y crealos de nuevo con la informacion de [swapi](https://swapi.dev/).
+Curl de ejemplo:
    ```bash
       curl --location 'https://conexachallenge-production.up.railway.app/movies/populateDatabase' \
       --header 'Authorization: Bearer jwt'
