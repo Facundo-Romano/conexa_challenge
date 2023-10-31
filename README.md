@@ -13,10 +13,6 @@
 Comandos:
 ```bash
     git clone https://github.com/Facundo-Romano/conexa_challenge.git
-    //Linux/Mac
-    touch .env
-    //Windows
-    echo. > .env
     //Dentro del repo
     npm install
     npm run build
