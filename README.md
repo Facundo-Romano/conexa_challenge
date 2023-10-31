@@ -22,6 +22,8 @@ Comandos:
     npm run build
     npm run start
 ```
+~~~
+~~~
 ## Endpoints de la app:
 1) Register (POST https://conexachallenge-production.up.railway.app/auth/register):
    Endpoint para crear nuevos usuarios.
@@ -47,7 +49,6 @@ Comandos:
           "email": "email@email.com",
           "password": "Password*123"
       }'
-  ```
 
 3) Get Movie By Id (GET https://conexachallenge-production.up.railway.app/movies/:id):
   Endpoint para obtener el detalle de una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder. También es necesario pasar el id de la pelicula.
@@ -92,7 +93,6 @@ Comandos:
               "https://swapi.dev/api/species/13/"
           ]
       }'
-  ```
 
 6) Update Movie (PUT https://conexachallenge-production.up.railway.app/movies/:id):
   Endpoint para obtener modificar una pelicula, se requiere el header Authorization con le jwt obtenido del logueo para acceder y que el usuario tenga permisos de administrador.
@@ -156,7 +156,6 @@ Comandos:
               "https://swapi.dev/api/species/13/"
           ]
       }'
-  ```
 
 8) Populate Databse (GET https://conexachallenge-production.up.railway.app/movies/populateDatabase):
    Endpoint para eliminar todos los registros de la base de datos y crealos de nuevo con la informacion de [swapi](https://swapi.dev/).
